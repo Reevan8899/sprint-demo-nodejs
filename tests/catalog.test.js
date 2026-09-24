@@ -13,3 +13,13 @@ test('unknown or wrong-type ID is rejected', () => {
   assert.throws(() => getProduct(999), /not found/);
   assert.throws(() => getProduct('2'), /not found/);
 });
+
+test('catalog results cannot mutate internal products', () => {
+  const products = listProducts();
+  products[0].price = 0;
+  products.pop();
+  getProduct(2).price = 0;
+  assert.equal(listProducts().length, 3);
+  assert.equal(getProduct(1).price, 75000);
+  assert.equal(getProduct(2).price, 1500);
+});

@@ -4,7 +4,7 @@ const products = [
   { id: 3, name: 'Клавиатура', price: 3500 },
 ];
 
-export function listProducts() { return products; }
+export function listProducts() { return products.map(product => ({ ...product })); }
 
 export function getProduct(productId) {
   const product = products.find(item => item.id === productId);
