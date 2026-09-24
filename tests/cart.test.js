@@ -38,3 +38,16 @@ test('cart protects its state from outside mutation', () => {
   result[0].quantity = 99;
   assert.equal(totalPrice(), 1500);
 });
+
+test('reject unsafe quantity and amount without mutating cart', () => {
+  assert.throws(() => addToCart(mouse, Number.MAX_SAFE_INTEGER + 1), /Quantity/);
+  assert.throws(() => addToCart(mouse, Number.MAX_SAFE_INTEGER), /safe integer/);
+  assert.deepEqual(getCart(), []);
+  addToCart({ id: 4, name: 'Free sample', price: 0 }, Number.MAX_SAFE_INTEGER);
+  assert.throws(() => addToCart({ id: 4, name: 'Free sample', price: 0 }), /safe integer/);
+  assert.equal(getCart()[0].quantity, Number.MAX_SAFE_INTEGER);
+  clearCart();
+  addToCart({ id: 5, name: 'Expensive item', price: Number.MAX_SAFE_INTEGER });
+  assert.throws(() => addToCart(mouse), /safe integer/);
+  assert.equal(getCart().length, 1);
+});

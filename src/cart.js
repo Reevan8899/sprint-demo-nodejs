@@ -6,11 +6,15 @@ export function addToCart(product, quantity = 1) {
       !Number.isSafeInteger(product.price) || product.price < 0) {
     throw new TypeError('Invalid product');
   }
-  if (!Number.isInteger(quantity) || quantity <= 0) {
+  if (!Number.isSafeInteger(quantity) || quantity <= 0) {
     throw new RangeError('Quantity must be a positive integer');
   }
   const current = cart.get(product.id);
   const nextQuantity = (current?.quantity ?? 0) + quantity;
+  const nextTotal = totalPrice() + (current?.product.price ?? product.price) * quantity;
+  if (!Number.isSafeInteger(nextQuantity) || !Number.isSafeInteger(nextTotal)) {
+    throw new RangeError('Cart exceeds safe integer limits');
+  }
   cart.set(product.id, { product: { ...(current?.product ?? product) }, quantity: nextQuantity });
 }
 
