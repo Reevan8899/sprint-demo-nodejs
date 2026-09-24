@@ -24,7 +24,7 @@ export function login(email, password) {
   let key;
   try { key = normalizeEmail(email); } catch { return false; }
   const user = users.get(key);
-  if (!user) return false;
+  if (!user || typeof password !== 'string') return false;
   return timingSafeEqual(user.hash, scryptSync(password, user.salt, 64));
 }
 

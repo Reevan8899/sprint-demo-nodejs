@@ -25,3 +25,10 @@ test('incorrect credentials return false', () => {
   assert.equal(login('nobody@example.com', 'securepass123'), false);
   assert.equal(login(null, 'securepass123'), false);
 });
+
+test('login rejects non-string passwords without throwing', () => {
+  register('user@example.com', 'securepass123');
+  for (const password of [null, undefined, 123, {}]) {
+    assert.equal(login('user@example.com', password), false);
+  }
+});
